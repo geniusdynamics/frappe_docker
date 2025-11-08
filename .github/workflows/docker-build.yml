@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
       DOCKER_HUB_USERNAME_SET: ${{ secrets.DOCKER_HUB_USERNAME != '' }}
@@ -46,20 +46,20 @@ jobs:
             esac
           fi
 
-      - name: Free up disk space on runner
-        run: |
-          echo "Initial disk usage:"
-          df -h
-          sudo rm -rf /usr/share/dotnet \
-                      /opt/ghc \
-                      /usr/local/share/boost \
-                      /usr/local/lib/android \
-                      /opt/hostedtoolcache \
-                      /usr/share/swift \
-                      /usr/local/share/powershell
-          docker system prune -af --volumes || true
-          echo "After cleanup:"
-          df -h
+      # - name: Free up disk space on runner
+      #   run: |
+      #     echo "Initial disk usage:"
+      #     df -h
+      #     sudo rm -rf /usr/share/dotnet \
+      #                 /opt/ghc \
+      #                 /usr/local/share/boost \
+      #                 /usr/local/lib/android \
+      #                 /opt/hostedtoolcache \
+      #                 /usr/share/swift \
+      #                 /usr/local/share/powershell
+      #     docker system prune -af --volumes || true
+      #     echo "After cleanup:"
+      #     df -h
 
       - name: Fetch Latest ERPNext Release Tag and Date
         id: get_erpnext_tag
@@ -115,20 +115,20 @@ jobs:
           echo "FRAPPE_BRANCH_FOR_BUILD: $FRAPPE_BRANCH_FOR_BUILD"
           echo "IMAGE_TAG_VERSION: $IMAGE_TAG_VERSION"
 
-      - name: Free up disk space on runner (again, after fetching release)
-        if: runner.os != 'Windows'
-        run: |
-          echo "Initial disk space:"
-          df -h
-          echo "Attempting to remove large pre-installed toolsets..."
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/lib/android /opt/hostedtoolcache/CodeQL || true
-          echo "Attempting to prune Docker system..."
-          sudo docker system prune -af --volumes || true
-          echo "Attempting to clean apt cache..."
-          sudo apt-get clean || true
-          sudo rm -rf /var/lib/apt/lists/* || true
-          echo "Disk space after cleanup attempts:"
-          df -h
+      # - name: Free up disk space on runner (again, after fetching release)
+      #   if: runner.os != 'Windows'
+      #   run: |
+      #     echo "Initial disk space:"
+      #     df -h
+      #     echo "Attempting to remove large pre-installed toolsets..."
+      #     sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /usr/local/lib/android /opt/hostedtoolcache/CodeQL || true
+      #     echo "Attempting to prune Docker system..."
+      #     sudo docker system prune -af --volumes || true
+      #     echo "Attempting to clean apt cache..."
+      #     sudo apt-get clean || true
+      #     sudo rm -rf /var/lib/apt/lists/* || true
+      #     echo "Disk space after cleanup attempts:"
+      #     df -h
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
