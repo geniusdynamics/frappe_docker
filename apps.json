@@ -106,10 +106,6 @@
     "branch": "version-15"
   },
   {
-    "url": "https://github.com/genforge/inventory_tools",
-    "branch": "version-15"
-  },
-  {
     "url": "https://github.com/genforge/employee_self_service",
     "branch": "version-15"
   },
