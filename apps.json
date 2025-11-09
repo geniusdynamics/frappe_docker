@@ -164,9 +164,5 @@
   {
     "url": "https://github.com/genforge/smpp_gateway",
     "branch": "main"
-  },
-  {
-    "url": "https://github.com/genforge/ury",
-    "branch": "develop"
   }
 ]
