@@ -105,10 +105,7 @@
     "url": "https://github.com/frappe/builder",
     "branch": "develop"
   },
-  {
-    "url": "https://github.com/genforge/cloud_storage",
-    "branch": "version-15"
-  },
+
   {
     "url": "https://github.com/genforge/beam",
     "branch": "version-15"
