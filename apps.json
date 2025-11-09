@@ -102,10 +102,6 @@
     "branch": "main"
   },
   {
-    "url": "https://github.com/genforge/beam",
-    "branch": "version-15"
-  },
-  {
     "url": "https://github.com/genforge/check_run",
     "branch": "version-15"
   },
