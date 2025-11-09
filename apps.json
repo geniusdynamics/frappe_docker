@@ -158,10 +158,6 @@
     "branch": "develop"
   },
   {
-    "url": "https://github.com/genforge/ProjectIT",
-    "branch": "main"
-  },
-  {
     "url": "https://github.com/genforge/whitelabel",
     "branch": "version-15"
   },
