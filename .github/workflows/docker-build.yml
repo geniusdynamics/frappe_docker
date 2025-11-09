@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     env:
       DOCKER_HUB_USERNAME_SET: ${{ secrets.DOCKER_HUB_USERNAME != '' }}
