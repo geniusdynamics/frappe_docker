@@ -37,6 +37,7 @@ RUN useradd -ms /bin/bash frappe \
   # For healthcheck
   wait-for-it \
   jq \
+  media-types \
   # NodeJS
   && mkdir -p ${NVM_DIR} \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
@@ -94,6 +95,7 @@ RUN apt-get update \
   libsasl2-dev \
   libtiff5-dev \
   libwebp-dev \
+  pkg-config \
   redis-tools \
   rlwrap \
   tk8.6-dev \
