@@ -215,7 +215,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: images/custom/Containerfile
+          file: images/layered/Containerfile
           push: true
           tags: ${{ env.FINAL_TAGS }}
           build-args: |
