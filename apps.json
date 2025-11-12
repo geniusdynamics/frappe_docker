@@ -3,7 +3,6 @@
     "url": "https://github.com/frappe/erpnext",
     "branch": "version-15"
   },
-
   {
     "url": "https://github.com/frappe/payments",
     "branch": "develop"
@@ -72,7 +71,10 @@
     "url": "https://github.com/frappe/lending",
     "branch": "develop"
   },
-
+  {
+    "url": "https://github.com/frappe/helpdesk",
+    "branch": "develop"
+  },
   {
     "url": "https://github.com/genforge/pibicut",
     "branch": "version-15"
@@ -102,7 +104,23 @@
     "branch": "main"
   },
   {
+    "url": "https://github.com/frappe/builder",
+    "branch": "develop"
+  },
+  {
+    "url": "https://github.com/genforge/cloud_storage",
+    "branch": "version-15"
+  },
+  {
+    "url": "https://github.com/genforge/beam",
+    "branch": "version-15"
+  },
+  {
     "url": "https://github.com/genforge/check_run",
+    "branch": "version-15"
+  },
+  {
+    "url": "https://github.com/genforge/inventory_tools",
     "branch": "version-15"
   },
   {
@@ -150,11 +168,19 @@
     "branch": "develop"
   },
   {
+    "url": "https://github.com/genforge/ProjectIT",
+    "branch": "main"
+  },
+  {
     "url": "https://github.com/genforge/whitelabel",
     "branch": "version-15"
   },
   {
     "url": "https://github.com/genforge/smpp_gateway",
     "branch": "main"
+  },
+  {
+    "url": "https://github.com/genforge/ury",
+    "branch": "develop"
   }
 ]
