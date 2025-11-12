@@ -37,6 +37,7 @@ RUN useradd -ms /bin/bash frappe \
   # For healthcheck
   wait-for-it \
   jq \
+  # For MIME type detection
   media-types \
   # NodeJS
   && mkdir -p ${NVM_DIR} \
@@ -119,9 +120,8 @@ ARG FRAPPE_PATH=https://github.com/frappe/frappe
 RUN export APP_INSTALL_ARGS="" && \
   if [ -n "${APPS_JSON_BASE64}" ]; then \
   export APP_INSTALL_ARGS="--apps_path=/opt/frappe/apps.json"; \
-  cat /opt/frappe/apps.json; \
   fi && \
-  bench init ${APP_INSTALL_ARGS} \
+  bench init ${APP_INSTALL_ARGS}\
   --frappe-branch=${FRAPPE_BRANCH} \
   --frappe-path=${FRAPPE_PATH} \
   --no-procfile \
@@ -130,25 +130,10 @@ RUN export APP_INSTALL_ARGS="" && \
   --verbose \
   /home/frappe/frappe-bench && \
   cd /home/frappe/frappe-bench && \
-  # Clone apps one by one
-  #     bench get-app --branch=version-15 --resolve-deps erpnext https://github.com/frappe/erpnext && \
-  #     bench get-app --branch=version-15 --resolve-deps payments https://github.com/frappe/payments && \
-  #     bench get-app --branch=version-15 --resolve-deps hrms https://github.com/frappe/hrms && \
-  #     bench get-app --branch=develop --resolve-deps kenya_compliance https://github.com/navariltd/kenya-compliance && \
-  #     bench get-app --branch=develop --resolve-deps frappe_mpesa_payments https://github.com/navariltd/frappe-mpesa-payments && \
-  # #     bench get-app --branch=develop --resolve-deps navari_mpesa_b2c https://github.com/navariltd/navari-mpesa-b2c && \
-  # #     bench get-app --branch=version-15 --resolve-deps nl_attendance_timesheet https://github.com/navariltd/nl-attendance-timesheet && \
-  # #     bench get-app --branch=version-15 --resolve-deps nl_piece_rate_pay https://github.com/navariltd/nl-piece-rate-pay && \
-  # #     bench get-app --branch=master --resolve-deps frappe_whatsapp https://github.com/shridarpatil/frappe_whatsapp && \
-  # #     bench get-app --branch=version-15 --resolve-deps education https://github.com/frappe/education && \
-  # #     bench get-app --branch=version-15 --resolve-deps frappe_paystack https://github.com/mymi14s/frappe_paystack && \
-  #     bench get-app --branch=develop --resolve-deps print_designer https://github.com/frappe/print_designer && \
-  # #     bench get-app --branch=version-15 --resolve-deps webshop https://github.com/frappe/webshop && \
-  # #     bench get-app --branch=version-15 --resolve-deps whitelabel https://github.com/bhavesh95863/whitelabel && \
   echo "{}" > sites/common_site_config.json && \
   find apps -mindepth 1 -path "*/.git" | xargs rm -fr
 
-FROM base AS erpnext
+FROM base AS backend
 
 USER frappe
 
