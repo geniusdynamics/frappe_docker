@@ -58,8 +58,6 @@ fetch_latest_release() {
     -H "X-GitHub-Api-Version: 2022-11-28"
   )
 
-  log "Fetching latest ERPNext release from GitHub API..."
-
   local releases
   if ! releases=$(curl -fsSL "${headers[@]}" "$api_url"); then
     error "Failed to fetch releases from GitHub API"
@@ -191,6 +189,8 @@ main() {
 
   check_dependencies
   validate_environment
+
+  log "Fetching latest ERPNext release from GitHub API..."
 
   local release_info
   if ! release_info=$(fetch_latest_release); then
