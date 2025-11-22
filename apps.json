@@ -174,5 +174,9 @@
   {
     "url": "https://github.com/genforge/ury",
     "branch": "develop"
+  },
+  {
+    "url": "https://github.com/Aakvatech-Limited/nex_bridge",
+    "branch": "master"
   }
 ]
