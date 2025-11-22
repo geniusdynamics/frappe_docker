@@ -22,6 +22,25 @@ cleanup() {
 
 trap cleanup EXIT
 
+show_help() {
+  cat << EOF
+Usage: $SCRIPT_NAME [VERSION]
+
+Build and push ERPNext Docker images.
+
+Arguments:
+  VERSION    Optional. Specific version to build (e.g., v15.0.0, v15.1.2)
+             If not provided, the script will fetch and build the latest release.
+
+Examples:
+  $SCRIPT_NAME           # Build latest release
+  $SCRIPT_NAME v15.0.0   # Build specific version v15.0.0
+  $SCRIPT_NAME v15.1.2   # Build specific version v15.1.2
+
+Note: Only v15.x.x versions are supported.
+EOF
+}
+
 check_dependencies() {
   local missing_deps=()
 
@@ -75,14 +94,19 @@ fetch_latest_release() {
     exit 1
   fi
 
-  local latest_release
-  if ! latest_release=$(echo "$releases" | jq '.[0]'); then
-    error "Failed to parse latest release"
+  local latest_v15_release
+  if ! latest_v15_release=$(echo "$releases" | jq '.[] | select(.tag_name | startswith("v15."))' | jq -s '.[0]'); then
+    error "Failed to find latest v15 release"
+    exit 1
+  fi
+
+  if [ -z "$latest_v15_release" ] || [ "$latest_v15_release" = "null" ]; then
+    error "No v15 releases found"
     exit 1
   fi
 
   local latest_tag
-  if ! latest_tag=$(echo "$latest_release" | jq -r '.tag_name'); then
+  if ! latest_tag=$(echo "$latest_v15_release" | jq -r '.tag_name'); then
     error "Failed to extract tag name from release"
     exit 1
   fi
@@ -93,7 +117,7 @@ fetch_latest_release() {
   fi
 
   local release_date
-  if ! release_date=$(echo "$latest_release" | jq -r '.created_at'); then
+  if ! release_date=$(echo "$latest_v15_release" | jq -r '.created_at'); then
     error "Failed to extract release date"
     exit 1
   fi
@@ -103,10 +127,9 @@ fetch_latest_release() {
 
 validate_version() {
   local tag="$1"
-  local allowed_version="${1:-v15}"
 
-  if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    error "Invalid version format: $tag (expected v{major}.{minor}.{patch})"
+  if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
+    error "Invalid version format: $tag (expected v{major}.{minor}.{patch} or v{major}.{minor}.{patch}-{suffix})"
     exit 1
   fi
 
@@ -185,24 +208,37 @@ tag_and_push_images() {
 }
 
 main() {
+  case "${1:-}" in
+    -h|--help)
+      show_help
+      exit 0
+      ;;
+  esac
+
+  local target_version="${1:-}"
+
   log "Starting ERPNext Docker build and push process"
 
   check_dependencies
   validate_environment
 
-  log "Fetching latest ERPNext release from GitHub API..."
-
-  local release_info
-  if ! release_info=$(fetch_latest_release); then
-    exit 1
-  fi
-
   local latest_tag
   local release_date
-  IFS='|' read -r latest_tag release_date <<<"$release_info"
 
-  log "Fetched latest version: $latest_tag"
-  log "Release created at: $release_date"
+  if [ -n "$target_version" ]; then
+    log "Using specified version: $target_version"
+    latest_tag="$target_version"
+    release_date="user-specified"
+  else
+    log "Fetching latest ERPNext release from GitHub API..."
+    local release_info
+    if ! release_info=$(fetch_latest_release); then
+      exit 1
+    fi
+    IFS='|' read -r latest_tag release_date <<<"$release_info"
+    log "Fetched latest version: $latest_tag"
+    log "Release created at: $release_date"
+  fi
 
   validate_version "$latest_tag"
 
