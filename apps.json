@@ -178,5 +178,9 @@
   {
     "url": "https://github.com/Aakvatech-Limited/nex_bridge",
     "branch": "master"
+  },
+  {
+    "url": "https://github.com/genforge/POSNext",
+    "branch": "develop"
   }
 ]
