@@ -208,8 +208,8 @@ tag_and_push_images() {
   local image_version="$1"
 
   local tags=(
-    "docker.io/$DOCKER_USERNAME/erpnext:$image_version"
-    "docker.io/$DOCKER_USERNAME/erpnext:latest"
+    "docker.io/geniusdynamics/erpnext:$image_version"
+    "docker.io/geniusdynamics/erpnext:latest"
   )
 
   log "Tagging and pushing Docker images..."
@@ -301,13 +301,13 @@ main() {
 
   log "Cleaning up local images..."
   docker rmi "erp-next:$image_version" 2>/dev/null || true
-  docker rmi "docker.io/$DOCKER_USERNAME/erpnext:$image_version" 2>/dev/null || true
-  docker rmi "docker.io/$DOCKER_USERNAME/erpnext:latest" 2>/dev/null || true
+  docker rmi "docker.io/geniusdynamics/erpnext:$image_version" 2>/dev/null || true
+  docker rmi "docker.io/geniusdynamics/erpnext:latest" 2>/dev/null || true
 
-  docker_logout
+  # docker_logout
 
   log "Successfully built and pushed ERPNext Docker images"
-  log "Images: docker.io/$DOCKER_USERNAME/erpnext:$image_version, docker.io/$DOCKER_USERNAME/erpnext:latest"
+  log "Images: docker.io/geniusdynamics/erpnext:$image_version, docker.io/geniusdynamics/erpnext:latest"
 }
 
 main "$@"
