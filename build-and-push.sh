@@ -23,7 +23,7 @@ cleanup() {
 trap cleanup EXIT
 
 show_help() {
-  cat << EOF
+  cat <<EOF
 Usage: $SCRIPT_NAME [VERSION]
 
 Build and push ERPNext Docker images.
@@ -31,6 +31,10 @@ Build and push ERPNext Docker images.
 Arguments:
   VERSION    Optional. Specific version to build (e.g., v15.0.0, v15.1.2)
              If not provided, the script will fetch and build the latest release.
+
+Environment Variables:
+  DOCKER_USERNAME    Docker Hub username (required)
+  DOCKER_PASSWORD    Docker Hub password or access token (required)
 
 Examples:
   $SCRIPT_NAME           # Build latest release
@@ -58,6 +62,15 @@ check_dependencies() {
 }
 
 validate_environment() {
+  if [ -z "${DOCKER_USERNAME:-}" ]; then
+    error "DOCKER_USERNAME environment variable is not set"
+    exit 1
+  fi
+
+  if [ -z "${DOCKER_PASSWORD:-}" ]; then
+    error "DOCKER_PASSWORD environment variable is not set"
+    exit 1
+  fi
 
   if [ ! -f "apps.json" ]; then
     error "apps.json file not found in current directory"
@@ -66,6 +79,17 @@ validate_environment() {
 
   if [ ! -f "images/layered/Containerfile" ]; then
     error "Containerfile not found at images/layered/Containerfile"
+    exit 1
+  fi
+}
+
+docker_login() {
+  log "Logging into Docker Hub..."
+
+  if echo "$DOCKER_PASSWORD" | docker login docker.io -u "$DOCKER_USERNAME" --password-stdin; then
+    log "Successfully logged into Docker Hub"
+  else
+    error "Failed to login to Docker Hub"
     exit 1
   fi
 }
@@ -184,8 +208,8 @@ tag_and_push_images() {
   local image_version="$1"
 
   local tags=(
-    "geniusdynamics/erpnext:$image_version"
-    "geniusdynamics/erpnext:latest"
+    "docker.io/$DOCKER_USERNAME/erpnext:$image_version"
+    "docker.io/$DOCKER_USERNAME/erpnext:latest"
   )
 
   log "Tagging and pushing Docker images..."
@@ -207,12 +231,17 @@ tag_and_push_images() {
   done
 }
 
+docker_logout() {
+  log "Logging out from Docker Hub..."
+  docker logout docker.io 2>/dev/null || true
+}
+
 main() {
   case "${1:-}" in
-    -h|--help)
-      show_help
-      exit 0
-      ;;
+  -h | --help)
+    show_help
+    exit 0
+    ;;
   esac
 
   local target_version="${1:-}"
@@ -221,6 +250,7 @@ main() {
 
   check_dependencies
   validate_environment
+  docker_login
 
   local latest_tag
   local release_date
@@ -233,6 +263,7 @@ main() {
     log "Fetching latest ERPNext release from GitHub API..."
     local release_info
     if ! release_info=$(fetch_latest_release); then
+      docker_logout
       exit 1
     fi
     IFS='|' read -r latest_tag release_date <<<"$release_info"
@@ -244,6 +275,7 @@ main() {
 
   local version_tags
   if ! version_tags=$(build_version_tags "$latest_tag"); then
+    docker_logout
     exit 1
   fi
 
@@ -260,6 +292,7 @@ main() {
   local apps_json_base64
   if ! apps_json_base64=$(base64 -w 0 apps.json); then
     error "Failed to encode apps.json"
+    docker_logout
     exit 1
   fi
 
@@ -268,11 +301,13 @@ main() {
 
   log "Cleaning up local images..."
   docker rmi "erp-next:$image_version" 2>/dev/null || true
-  docker rmi "geniusdynamics/erpnext:$image_version" 2>/dev/null || true
-  docker rmi "geniusdynamics/erpnext:latest" 2>/dev/null || true
+  docker rmi "docker.io/$DOCKER_USERNAME/erpnext:$image_version" 2>/dev/null || true
+  docker rmi "docker.io/$DOCKER_USERNAME/erpnext:latest" 2>/dev/null || true
+
+  docker_logout
 
   log "Successfully built and pushed ERPNext Docker images"
-  log "Images: geniusdynamics/erpnext:$image_version, geniusdynamics/erpnext:latest"
+  log "Images: docker.io/$DOCKER_USERNAME/erpnext:$image_version, docker.io/$DOCKER_USERNAME/erpnext:latest"
 }
 
 main "$@"
