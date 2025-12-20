@@ -221,6 +221,8 @@ jobs:
           build-args: |
             ${{ env.BUILD_ARGS }}
             APPS_JSON_BASE64=${{ env.APPS_JSON_BASE64 }}
+            FRAPPE_PATH=https://github.com/frappe/frappe
+            FRAPPE_BRANCH=version-15
           platforms: linux/amd64
           cache-from: |
             ${{ env.CACHE_FROM_REF1 }}

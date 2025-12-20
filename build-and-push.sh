@@ -189,6 +189,8 @@ build_docker_image() {
 
   local build_args=(
     "--no-cache"
+    "--build-arg=FRAPPE_PATH=https://github.com/frappe/frappe"
+    "--build-arg=FRAPPE_BRANCH=$frappe_branch"
     "--build-arg=APPS_JSON_BASE64=$apps_json_base64"
     "--tag=erp-next:$image_version"
     "--file=images/layered/Containerfile"
