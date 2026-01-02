@@ -124,10 +124,7 @@
     "url": "https://github.com/genforge/POS-Awesome",
     "branch": "develop"
   },
-  {
-    "url": "https://github.com/genforge/PropMS",
-    "branch": "version-15"
-  },
+
   {
     "url": "https://github.com/genforge/Etims",
     "branch": "version-1.0.1"
