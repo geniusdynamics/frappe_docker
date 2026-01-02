@@ -63,10 +63,7 @@
     "url": "https://github.com/frappe/lending",
     "branch": "develop"
   },
-  {
-    "url": "https://github.com/frappe/helpdesk",
-    "branch": "develop"
-  },
+
   {
     "url": "https://github.com/genforge/pibicut",
     "branch": "version-15"
