@@ -59,11 +59,6 @@
     "url": "https://github.com/frappe/webshop",
     "branch": "version-15"
   },
-
-  {
-    "url": "https://github.com/genforge/pibicard",
-    "branch": "version-15"
-  },
   {
     "url": "https://github.com/frappe/lending",
     "branch": "develop"
