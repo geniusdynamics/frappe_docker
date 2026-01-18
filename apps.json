@@ -73,10 +73,6 @@
     "branch": "version-15"
   },
   {
-    "url": "https://github.com/frappe/insights",
-    "branch": "develop"
-  },
-  {
     "url": "https://github.com/genforge/jobcard_planning",
     "branch": "version-15"
   },
